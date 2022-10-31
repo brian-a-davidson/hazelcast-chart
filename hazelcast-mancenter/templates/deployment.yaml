@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hazelcast-mancenter
+  namespace: default
+  labels:
+    app: hazelcast-mancenter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hazelcast-mancenter
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: hazelcast-mancenter
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+    spec:
+      containers:
+      - name: hazelcast-mancenter 
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
